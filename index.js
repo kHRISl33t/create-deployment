@@ -12,7 +12,7 @@ const create = require('./create')
 const program = require('commander');
 
 program
-  .version('0.0.1')
+  .version('1.0.0')
   .description('Kubernetes deployment creator for Node.js');
 
 program
