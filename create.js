@@ -1,4 +1,4 @@
-const { makeDir, writeFile } = require('./helper')
+const helper = require('./helper')
 const fs = require('fs')
 
 async function secretFile(values, name) {
@@ -12,9 +12,9 @@ ${values}`
 
   try {
     if (!fs.existsSync('kubernetes')) {
-      await makeDir('kubernetes')
+      await helper.makeDir('kubernetes')
     }
-    await writeFile(`kubernetes/${name}-secrets.yml`, secretYaml)
+    await helper.writeFile(`kubernetes/${name}-secrets.yml`, secretYaml)
     console.log('Successfully created yaml file for secrets.')
   } catch (err) {
     console.error('Error while creating Secrets yaml file')
@@ -60,9 +60,9 @@ spec:
 
   try {
     if (!fs.existsSync('kubernetes')) {
-      await makeDir('kubernetes')
+      await helper.makeDir('kubernetes')
     }
-    await writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
+    await helper.writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
     console.log('Successfully created Deployment yaml file.')
   } catch (err) {
     console.error('Error while creating deployment yaml file')
@@ -103,9 +103,9 @@ spec:
 
   try {
     if (!fs.existsSync('kubernetes')) {
-      await makeDir('kubernetes')
+      await helper.makeDir('kubernetes')
     }
-    await writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
+    await helper.writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
     console.log('Successfully created Deployment yaml file.')
   } catch (err) {
     console.error('Error while creating Deployment yaml file')
@@ -133,7 +133,7 @@ spec:
   `
 
   try {
-    await writeFile(`kubernetes/${deployment}-service.yml`, serviceYaml)
+    await helper.writeFile(`kubernetes/${deployment}-service.yml`, serviceYaml)
     console.log('Successfully created Service yaml file.')
   } catch (err) {
     console.error('Error while creating Service yaml file')

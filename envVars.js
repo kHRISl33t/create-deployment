@@ -1,4 +1,4 @@
-const { readFile } = require('./helper')
+const helper = require('./helper')
 const _ = require('lodash')
 const questions = require('./questions')
 const create = require('./create')
@@ -8,7 +8,7 @@ async function processEnvFile(pathToFile) {
   let data = ''
 
   try {
-    data = await readFile(pathToFile)
+    data = await helper.readFile(pathToFile)
   } catch (err) {
     console.error(`Error while reading file from ${pathToFile}`)
     throw new Error(`Error in processEnvVars function: ${err}`)

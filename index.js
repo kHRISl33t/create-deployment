@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
-const inquirer = require('inquirer')
-const { readDir } = require('./helper')
-const homeDir = require('os').homedir()
 const { findEnvFiles } = require('./findEnvFiles')
 const envVars = require('./envVars')
 const questions = require('./questions')

@@ -1,10 +1,10 @@
 const find = require('find')
-const { findFile } = require('./helper')
+const helper = require('./helper')
 
 async function findEnvFiles(workingDir) {
   let transformed = []
 
-  const toTransform = await findFile(/\.env/, workingDir)
+  const toTransform = await helper.findFile(/\.env/, workingDir)
     .catch(err => {
       throw err
     })
