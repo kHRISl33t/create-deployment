@@ -1,0 +1,39 @@
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: test
+  name: test-worker
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test
+      tier: worker
+  template:
+    metadata:
+      labels:
+        app: test
+        tier: worker
+    spec:
+      containers:
+      - env:
+        - name: PORT
+          value: "3000"
+        - name: SOMETHING
+          value: "ELSE"
+        - name: DB_PW
+          valueFrom:
+            secretKeyRef:
+              key: dbpw
+              name: test
+        image: testapp:v1
+        imagePullPolicy: IfNotPresent
+        name: testapp
+        resources: {}
+        ports:
+        - containerPort: 1337
+          protocol: TCP
+    

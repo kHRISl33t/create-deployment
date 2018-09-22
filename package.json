@@ -1,0 +1,28 @@
+{
+  "name": "deployment-creator",
+  "version": "0.0.1",
+  "description": "k8s deployment creator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "k8s",
+    "kubernetes",
+    "nodejs",
+    "deployment",
+    "creator",
+    "command-line",
+    "cli",
+    "tool"
+  ],
+  "author": "Kristof Ivancza <kristof.ivancza@risingstack.com> (github.com/kHRISl33t)",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.17.1",
+    "find": "^0.2.9",
+    "inquirer": "^6.2.0",
+    "inquirer-directory": "^2.1.0",
+    "lodash": "^4.17.11"
+  }
+}
