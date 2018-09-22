@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
-const { findEnvFiles } = require('./findEnvFiles')
+const helper = require('./helper')
 const envVars = require('./envVars')
 const questions = require('./questions')
 const create = require('./create')
@@ -58,7 +58,7 @@ program
 
       try {
         // search for .env file in the given directory
-        foundFiles = await findEnvFiles(workingDir)
+        foundFiles = await helper.findEnvFiles(workingDir)
         // select the needed env file to work with
         listOfFoundEnvFiles = await questions.listOfFoundEnvFiles(foundFiles)
       } catch (err) {
