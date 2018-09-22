@@ -71,7 +71,7 @@ module.exports = {
     return await inquirer.prompt([{
       type: 'confirm',
       name: 'value',
-      message: 'You will need a service file for your deployment?',
+      message: 'Will you need a service file for your deployment?',
       default: false
     }])
   },
