@@ -19,15 +19,6 @@ function writeFile(path, data, opts = 'utf8') {
 })
 }
 
-function readDir(path) {
-  new Promise((res, rej) => {
-    fs.readdir(path, (err, files) => {
-      if (err) rej(err)
-      else res(files)
-    })
-  })
-}
-
 function findFile(pattern, dir) {
   return new Promise((resolve, reject) => {
     find.file(pattern, dir, files => {
