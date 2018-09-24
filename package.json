@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "k8s deployment creator",
   "main": "index.js",
+  "bin": {
+    "deployment-creator": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,6 +14,7 @@
     "kubernetes",
     "nodejs",
     "deployment",
+    "service",
     "creator",
     "command-line",
     "cli",
@@ -22,7 +26,6 @@
     "commander": "^2.17.1",
     "find": "^0.2.9",
     "inquirer": "^6.2.0",
-    "inquirer-directory": "^2.1.0",
     "lodash": "^4.17.11"
   }
 }
