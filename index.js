@@ -5,18 +5,19 @@ const helper = require('./helper')
 const envVars = require('./envVars')
 const questions = require('./questions')
 const create = require('./create')
+const joi = require('joi')
 
 const program = require('commander');
 
 program
   .version('1.0.0')
-  .description('Kubernetes deployment & service creator for Node.js');
+  .description('Kubernetes deployment & service creator');
 
 program
   .command('name <deployment>')
   .alias('n')
   .description('Name of your deployment.')
-  .option('-d, --directory [directory]', 'Path to your project directory.', process.cwd())
+  .option('-d, --directory [directory] [optional]', 'Path to your project directory. By default it will use the current directory you are in.', process.cwd())
   .action(async (deployment, args) => {
     const workingDir = args.directory
 
@@ -78,15 +79,17 @@ program
 
       try { 
         await create.deploymentWithEnvVars(deployment, namespace.value, processType.value, dockerImage.value, containerName.value, containerPort.value, env)
+        console.log('Successfully created yaml for deployment with secrets/envvars.')
       } catch (err) {
-        console.error('Error while creating deployment with envvars..', err)
+        console.error('Error while creating deployment with secrets/envvars...', err)
       }
-    }
-
-    try {
-      await create.deployment(deployment, namespace.value, processType.value, dockerImage.value, containerName.value, containerPort.value, env)
-    } catch (err) {
-      console.error('Error while creating deployment...', err)
+    } else {
+      try {
+        await create.deployment(deployment, namespace.value, processType.value, dockerImage.value, containerName.value, containerPort.value)
+        console.log('Successfully created yaml for deployment.')
+      } catch (err) {
+        console.error('Error while creating deployment...', err)
+      }
     }
 
     let shouldCreateService
@@ -112,6 +115,8 @@ program
     }
 
     // TODO: init eslint
+    // TODO: √ add input validation
+    // TODO: use mustache
     // TODO: make tests
     // TODO: provide dir multiple way: `-d ../project-dir`, `-d project-dir`
     // depends on the current folder
