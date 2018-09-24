@@ -15,7 +15,6 @@ ${values}`
   }
 
   return await helper.writeFile(`kubernetes/${name}-secrets.yml`, secretYaml)
-  
 }
 
 async function envSection(envVars, secretsEnvVars) {
@@ -119,7 +118,7 @@ spec:
     ${typeOfService}
   `
 
-  return await helper.writeFile(`kubernetes/${deployment}-service.yml`, serviceYamla)
+  return await helper.writeFile(`kubernetes/${deployment}-service.yml`, serviceYaml)
 }
 
 module.exports = {
