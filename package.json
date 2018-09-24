@@ -1,10 +1,10 @@
 {
-  "name": "deployment-creator",
-  "version": "0.1.0",
-  "description": "k8s deployment creator",
+  "name": "create-deployment",
+  "version": "1.0.0",
+  "description": "k8s deployment and service creator",
   "main": "index.js",
   "bin": {
-    "deployment-creator": "./index.js"
+    "create-deployment": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,6 +26,7 @@
     "commander": "^2.17.1",
     "find": "^0.2.9",
     "inquirer": "^6.2.0",
+    "joi": "^13.6.0",
     "lodash": "^4.17.11"
   }
 }
