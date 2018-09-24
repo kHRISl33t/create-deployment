@@ -5,7 +5,6 @@ const helper = require('./helper')
 const envVars = require('./envVars')
 const questions = require('./questions')
 const create = require('./create')
-const joi = require('joi')
 
 const program = require('commander');
 
