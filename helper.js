@@ -2,21 +2,21 @@ const fs = require('fs')
 const find = require('find')
 
 function readFile(path, opts = 'utf8') {
-  return new Promise((res, rej) => {
+  return new Promise((resolve, reject) => {
     fs.readFile(path, opts, (err, data) => {
-        if (err) rej(err)
-        else res(data)
+        if (err) reject(err)
+        else resolve(data)
     })
   })
 }
 
 function writeFile(path, data, opts = 'utf8') {
-  return new Promise((res, rej) => {
+  return new Promise((resolve, reject) => {
     fs.writeFile(path, data, opts, (err) => {
-        if (err) rej(err)
-        else res()
+        if (err) reject(err)
+        else resolve()
     })
-})
+  })
 }
 
 function findFile(pattern, dir) {
@@ -44,7 +44,7 @@ async function findEnvFiles(workingDir) {
 
   const toTransform = await findFile(/\.env/, workingDir)
     .catch(err => {
-      throw err
+      return err
     })
 
   toTransform.forEach(el => {

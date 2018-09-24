@@ -10,7 +10,7 @@ const program = require('commander');
 
 program
   .version('1.0.0')
-  .description('Kubernetes deployment creator for Node.js');
+  .description('Kubernetes deployment & service creator for Node.js');
 
 program
   .command('name <deployment>')
@@ -76,13 +76,26 @@ program
         process.exit(1)
       }
 
-      // handle error here on the top not inside
-      await create.deploymentWithEnvVars(deployment, namespace.value, processType.value, dockerImage.value, containerName.value, containerPort.value, env)
-    } else {
-      await create.deployment(deployment, namespace.value, processType.value, dockerImage.value, containerName.value, containerPort.value, env)
+      try { 
+        await create.deploymentWithEnvVars(deployment, namespace.value, processType.value, dockerImage.value, containerName.value, containerPort.value, env)
+      } catch (err) {
+        console.error('Error while creating deployment with envvars..', err)
+      }
     }
 
-    const shouldCreateService = await questions.shouldCreateService()
+    try {
+      await create.deployment(deployment, namespace.value, processType.value, dockerImage.value, containerName.value, containerPort.value, env)
+    } catch (err) {
+      console.error('Error while creating deployment...', err)
+    }
+
+    let shouldCreateService
+
+    try {
+      shouldCreateService = await questions.shouldCreateService()
+    } catch (err) {
+      console.error('Error:', err)
+    }
 
     if (shouldCreateService.value) {
       try {
@@ -92,11 +105,16 @@ program
         ((serviceType.value === 'internal') ? typeOfService = 'ClusterIP' : typeOfService = 'LoadBalancer')
 
         await create.service(deployment, processType.value, containerPort.value, typeOfService)
+        console.log('Successfully created yaml file for Service!')
       } catch (err) {
-        console.error('Error while creating Service yaml file.')
-        throw new Error(err)
+        console.error('Error while creating Service yaml file.', err)
       }
     }
+
+    // TODO: init eslint
+    // TODO: make tests
+    // TODO: provide dir multiple way: `-d ../project-dir`, `-d project-dir`
+    // depends on the current folder
 
   })
 

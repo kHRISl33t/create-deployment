@@ -105,7 +105,7 @@ async function createEnvVars(object, name) {
     }
     return await create.envSection(notSelectedToStoreAsSecret, secretValues)
   } catch (err) {
-    console.error('Couldnt create env for deployment.', err)
+    console.error(`Couldn't create env for deployment.`)
     throw new Error(err)
   }
 }

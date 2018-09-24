@@ -10,16 +10,12 @@ type: Opaque
 data:
 ${values}`
 
-  try {
-    if (!fs.existsSync('kubernetes')) {
-      await helper.makeDir('kubernetes')
-    }
-    await helper.writeFile(`kubernetes/${name}-secrets.yml`, secretYaml)
-    console.log('Successfully created yaml file for secrets.')
-  } catch (err) {
-    console.error('Error while creating Secrets yaml file')
-    throw new Error(err)
+  if (!fs.existsSync('kubernetes')) {
+    await helper.makeDir('kubernetes')
   }
+
+  return await helper.writeFile(`kubernetes/${name}-secrets.yml`, secretYaml)
+  
 }
 
 async function envSection(envVars, secretsEnvVars) {
@@ -58,16 +54,11 @@ spec:
           protocol: TCP
     `
 
-  try {
-    if (!fs.existsSync('kubernetes')) {
-      await helper.makeDir('kubernetes')
-    }
-    await helper.writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
-    console.log('Successfully created Deployment yaml file.')
-  } catch (err) {
-    console.error('Error while creating deployment yaml file')
-    throw new Error(err)
+  if (!fs.existsSync('kubernetes')) {
+    await helper.makeDir('kubernetes')
   }
+
+  return await helper.writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
 }
 
 async function deployment(deployment, namespace, processType, image, containerName, containerPort) {
@@ -101,16 +92,12 @@ spec:
           protocol: TCP
     `
 
-  try {
-    if (!fs.existsSync('kubernetes')) {
-      await helper.makeDir('kubernetes')
-    }
-    await helper.writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
-    console.log('Successfully created Deployment yaml file.')
-  } catch (err) {
-    console.error('Error while creating Deployment yaml file')
-    throw new Error(err)
+  if (!fs.existsSync('kubernetes')) {
+    await helper.makeDir('kubernetes')
   }
+
+  return await helper.writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
+
 }
 
 async function service(deployment, processType, containerPort, typeOfService) {
@@ -132,13 +119,7 @@ spec:
     ${typeOfService}
   `
 
-  try {
-    await helper.writeFile(`kubernetes/${deployment}-service.yml`, serviceYaml)
-    console.log('Successfully created Service yaml file.')
-  } catch (err) {
-    console.error('Error while creating Service yaml file')
-    throw new Error(err)
-  }
+  return await helper.writeFile(`kubernetes/${deployment}-service.yml`, serviceYamla)
 }
 
 module.exports = {
