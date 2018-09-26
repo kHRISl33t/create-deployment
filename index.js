@@ -106,7 +106,7 @@ program
 
         ((serviceType.value === 'internal') ? typeOfService = 'ClusterIP' : typeOfService = 'LoadBalancer')
 
-        await create.service(deployment, processType.value, containerPort.value, typeOfService)
+        await create.service(deployment, namespace.value, processType.value, containerPort.value, typeOfService)
         console.log('Successfully created yaml file for Service!')
       } catch (err) {
         console.error('Error while creating Service yaml file.', err)
@@ -118,6 +118,7 @@ program
     // TODO: use mustache
     // TODO: make tests
     // TODO: provide dir multiple way: `-d ../project-dir`, `-d project-dir`
+    // TODO: path parse
     // depends on the current folder
 
   })

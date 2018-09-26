@@ -99,12 +99,13 @@ spec:
 
 }
 
-async function service(deployment, processType, containerPort, typeOfService) {
+async function service(deployment, namespace, processType, containerPort, typeOfService) {
   let serviceYaml = `
 apiVersion: v1
 kind: Service
 metadata:
   name: ${deployment}-service
+  namespace: ${namespace}
   labels:
     app: ${deployment}
 spec:
