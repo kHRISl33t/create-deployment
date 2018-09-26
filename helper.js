@@ -27,7 +27,7 @@ function findFile(pattern, dir) {
   return new Promise((resolve, reject) => {
     find.file(pattern, dir, (files) => {
       if (!files.length) {
-        reject(`There is no .env file in the given project folder: ${dir}`)
+        reject()
       }
       resolve(files)
     })
@@ -45,9 +45,13 @@ function makeDir(dirname) {
 
 async function findEnvFiles(workingDir) {
   const transformed = []
+  let toTransform
 
-  const toTransform = await findFile(/\.env/, workingDir)
-    .catch(err => err)
+  try {
+    toTransform = await findFile(/\.env/, workingDir)
+  } catch (err) {
+    return err
+  }
 
   toTransform.forEach((el) => {
     const indexOfSlash = el.lastIndexOf('/')
