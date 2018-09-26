@@ -4,10 +4,11 @@
   "description": "k8s deployment and service creator",
   "main": "index.js",
   "bin": {
-    "create-deployment": "./index.js"
+    "create-deployment": "src/index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
   },
   "keywords": [
     "k8s",
