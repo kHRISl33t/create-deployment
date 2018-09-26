@@ -133,8 +133,6 @@ program
       }
     }
 
-    // TODO: √ init eslint
-    // TODO: √ add input validation
     // TODO: make tests
     // TODO: provide dir multiple way: `-d ../project-dir`, `-d project-dir`
     // TODO: path parse
