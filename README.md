@@ -1,12 +1,5 @@
 # Kubernetes deployment & service generator for Node.js apps.
 
-1. [Install](README.md##Install)
-2. [Usage](README.MD##Usage)
-3. [What's is this CLI tool for?](README.md##What's-is-this-CLI-tool-for?)
-4. [How to apply the created files?](README.md##How-to-apply-the-created-files)
-5. [If you are not familiar with Kubernetes](README.md##If-you-are-not-familiar-with-Kubernetes)
-6. [My plans for the future](##My-plans-for-the-future)
-
 ## Install
 
 ```sh
