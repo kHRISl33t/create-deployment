@@ -6,7 +6,6 @@
 
 const fs = require('fs')
 const program = require('commander')
-
 const helper = require('./helper')
 const envVars = require('./envVars')
 const questions = require('./questions')
@@ -30,9 +29,7 @@ program
       process.exit(1)
     }
 
-    console.log(
-      `Deployment name will be: ${deployment}\nWorking directory: ${workingDir}`
-    )
+    console.log(`Deployment name will be: ${deployment}\nWorking directory: ${workingDir}`)
 
     // changing directory
     process.chdir(args.directory)
@@ -67,7 +64,8 @@ program
         // select the needed env file to work with
         listOfFoundEnvFiles = await questions.listOfFoundEnvFiles(foundFiles)
       } catch (err) {
-        console.error(err)
+        console.error('There is no .env file in the given folder.')
+        process.exit(1)
       }
 
       try {
