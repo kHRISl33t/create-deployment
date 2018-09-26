@@ -16,7 +16,7 @@ module.exports = {
       name: 'value',
       message: 'Does your app have process type?',
       default: 'app',
-      validate: (value) => validate(value, Joi.string().alphanum())
+      validate: value => validate(value, Joi.string().alphanum())
     }])
   },
   namespace: async() => {
@@ -25,7 +25,7 @@ module.exports = {
       name: 'value',
       message: 'In which namespace you want to run your application?',
       default: 'default',
-      validate: (value) => validate(value, Joi.string().alphanum().required())
+      validate: value => validate(value, Joi.string().alphanum().required())
     }])
   },
   dockerImage: async() => {
@@ -34,7 +34,7 @@ module.exports = {
       name: 'value',
       message: 'Provide your docker image name/url:',
       default: 'dockerhub.io/myimage:tag',
-      validate: (value) => validate(value, Joi.string().required())
+      validate: value => validate(value, Joi.string().required())
     }])
   },
   containerName: async() => {
@@ -43,7 +43,7 @@ module.exports = {
       name: 'value',
       message: 'Give a name to your docker container:',
       default: 'myimage',
-      validate: (value) => validate(value, Joi.string().alphanum().required())
+      validate: value => validate(value, Joi.string().alphanum().required())
     }])
   },
   containerPort: async() => {
@@ -52,7 +52,7 @@ module.exports = {
       name: 'value',
       message: 'On which port your container exposed?',
       default: '80',
-      validate: (value) => validate(value, Joi.number().integer().min(0).max(65535).required())
+      validate: value => validate(value, Joi.number().integer().min(0).max(65535).required())
     }])
   },
   hasEnv: async() => {
@@ -61,7 +61,7 @@ module.exports = {
       name: 'value',
       message: 'Do you have .env file(s)?',
       default: false,
-      validate: (value) => validate(value, Joi.boolean().required())
+      validate: value => validate(value, Joi.boolean().required())
     }])
   },
   listOfFoundEnvFiles: async(files) => {
@@ -88,7 +88,7 @@ module.exports = {
       name: 'value',
       message: 'Will you need a service file for your deployment?',
       default: false,
-      validate: (value) => validate(value, Joi.boolean().required())
+      validate: value => validate(value, Joi.boolean().required())
     }])
   },
   internalOrExternalService: async() => {
