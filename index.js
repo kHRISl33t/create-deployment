@@ -1,22 +1,27 @@
 #!/usr/bin/env node
 
+/* eslint-disable  no-unused-expressions */
+
+'use strict'
+
 const fs = require('fs')
+const program = require('commander')
+
 const helper = require('./helper')
 const envVars = require('./envVars')
 const questions = require('./questions')
 const create = require('./create')
 
-const program = require('commander');
-
 program
   .version('1.0.0')
-  .description('Kubernetes deployment & service creator');
+  .description('Kubernetes deployment & service creator')
 
 program
   .command('name <deployment>')
   .alias('n')
   .description('Name of your deployment.')
-  .option('-d, --directory [directory] [optional]', 'Path to your project directory. By default it will use the current directory you are in.', process.cwd())
+  .option('-d, --directory [directory] [optional]', 'Path to your project directory.'
+  + 'By default it will use the current directory you are in.', process.cwd())
   .action(async (deployment, args) => {
     const workingDir = args.directory
 
@@ -26,7 +31,7 @@ program
     }
 
     console.log(
-    `Deployment name will be: ${deployment}\nWorking directory: ${workingDir}`
+      `Deployment name will be: ${deployment}\nWorking directory: ${workingDir}`
     )
 
     // changing directory
@@ -64,7 +69,7 @@ program
       } catch (err) {
         console.error(err)
       }
-  
+
       try {
         const file = listOfFoundEnvFiles.values
         const path = `${workingDir}/${file}`
@@ -76,15 +81,30 @@ program
         process.exit(1)
       }
 
-      try { 
-        await create.deploymentWithEnvVars(deployment, namespace.value, processType.value, dockerImage.value, containerName.value, containerPort.value, env)
+      try {
+        await create.deploymentWithEnvVars(
+          deployment,
+          namespace.value,
+          processType.value,
+          dockerImage.value,
+          containerName.value,
+          containerPort.value,
+          env
+        )
         console.log('Successfully created yaml for deployment with secrets/envvars.')
       } catch (err) {
         console.error('Error while creating deployment with secrets/envvars...', err)
       }
     } else {
       try {
-        await create.deployment(deployment, namespace.value, processType.value, dockerImage.value, containerName.value, containerPort.value)
+        await create.deployment(
+          deployment,
+          namespace.value,
+          processType.value,
+          dockerImage.value,
+          containerName.value,
+          containerPort.value
+        )
         console.log('Successfully created yaml for deployment.')
       } catch (err) {
         console.error('Error while creating deployment...', err)
@@ -113,14 +133,12 @@ program
       }
     }
 
-    // TODO: init eslint
+    // TODO: √ init eslint
     // TODO: √ add input validation
-    // TODO: use mustache
     // TODO: make tests
     // TODO: provide dir multiple way: `-d ../project-dir`, `-d project-dir`
     // TODO: path parse
     // depends on the current folder
-
   })
 
 program.parse(process.argv)

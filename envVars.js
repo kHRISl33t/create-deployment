@@ -1,10 +1,14 @@
-const helper = require('./helper')
+/* eslint-disable max-len */
+
+'use strict'
+
 const _ = require('lodash')
+const helper = require('./helper')
 const questions = require('./questions')
 const create = require('./create')
 
 async function processEnvFile(pathToFile) {
-  let envVars = {}
+  const envVars = {}
   let data = ''
 
   try {
@@ -18,29 +22,29 @@ async function processEnvFile(pathToFile) {
     const transform = data
 
     // split values after each line
-    transform.split('\n').forEach(line => {
+    transform.split('\n').forEach((line) => {
       // get index of '='
-      let equalSignIndex = line.indexOf('=')
+      const equalSignIndex = line.indexOf('=')
       // get length of string
-      let lengthOfString = line.length
-  
+      const lengthOfString = line.length
+
       // returns -1 if there is no match for the given char
       if (equalSignIndex !== -1) {
         // create key value pairs of env vars
-        let firstPart = line.slice(0, equalSignIndex)
-        let secondPart = line.slice(equalSignIndex + 1, lengthOfString)
+        const firstPart = line.slice(0, equalSignIndex)
+        const secondPart = line.slice(equalSignIndex + 1, lengthOfString)
         envVars[firstPart] = secondPart
       }
     })
 
     return envVars
-  } else {
-    throw new Error('Empty .env files are not allowed')
   }
-} 
+
+  throw new Error('Empty .env files are not allowed')
+}
 
 async function createEnvVars(object, name) {
-  let nameOfEnvVars = []
+  const nameOfEnvVars = []
   let secretKeyValues = ''
   let ListOfEnvVars = []
   let notSelectedToStoreAsSecret = ''
@@ -86,14 +90,14 @@ async function createEnvVars(object, name) {
   // create env for secret key values
   values.forEach((item, i) => {
     // convert key to lowercase and remove special characters from it
-    let formatKey = `${item.toLowerCase().replace(/[^a-zA-Z ]/g, "")}`
+    const formatKey = `${item.toLowerCase().replace(/[^a-zA-Z ]/g, '')}`
     // create base64 values
-    let base64Value = `${Buffer.from(object[item]).toString('base64')}`
+    const base64Value = `${Buffer.from(object[item]).toString('base64')}`
     secretKeyValues += `  ${formatKey}: ${base64Value}\n`
 
     // create env part for deployment
     if (i === values.length - 1) {
-      secretValues += `        - name: ${item}\n          valueFrom:\n            secretKeyRef:\n              key: ${formatKey}\n              name: ${name}`
+      secretValues += `- name: ${item}\n          valueFrom:\n            secretKeyRef:\n              key: ${formatKey}\n              name: ${name}`
     } else {
       secretValues += `        - name: ${item}\n          valueFrom:\n            secretKeyRef:\n              key: ${formatKey}\n              name: ${name}\n`
     }
@@ -105,7 +109,7 @@ async function createEnvVars(object, name) {
     }
     return await create.envSection(notSelectedToStoreAsSecret, secretValues)
   } catch (err) {
-    console.error(`Couldn't create env for deployment.`)
+    console.error('Could not create env for deployment.')
     throw new Error(err)
   }
 }

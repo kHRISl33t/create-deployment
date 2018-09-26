@@ -1,8 +1,13 @@
-const helper = require('./helper')
+/* eslint-disable no-shadow */
+/* eslint-disable no-return-await */
+
+'use strict'
+
 const fs = require('fs')
+const helper = require('./helper')
 
 async function secretFile(values, name) {
-  let secretYaml = `apiVersion: v1
+  const secretYaml = `apiVersion: v1
 kind: Secret
 metadata:
   name: ${name}
@@ -22,7 +27,7 @@ async function envSection(envVars, secretsEnvVars) {
 }
 
 async function deploymentWithEnvVars(deployment, namespace, processType, image, containerName, containerPort, env) {
-  let deploymentYaml = `
+  const deploymentYaml = `
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -61,7 +66,7 @@ spec:
 }
 
 async function deployment(deployment, namespace, processType, image, containerName, containerPort) {
-  let deploymentYaml = `
+  const deploymentYaml = `
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -96,11 +101,10 @@ spec:
   }
 
   return await helper.writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
-
 }
 
 async function service(deployment, namespace, processType, containerPort, typeOfService) {
-  let serviceYaml = `
+  const serviceYaml = `
 apiVersion: v1
 kind: Service
 metadata:
@@ -127,5 +131,5 @@ module.exports = {
   envSection,
   deployment,
   deploymentWithEnvVars,
-  service,
+  service
 }
