@@ -75,7 +75,7 @@ async function createEnvVars(object, name) {
   notSelected.forEach((item, i) => {
     if (values.length === 0) {
       if (i === notSelected.length - 1) {
-        notSelectedToStoreAsSecret += `        - name: ${item}
+        notSelectedToStoreAsSecret += `        - name: ${item}          
           value: "${object[item]}"`
       } else {
         notSelectedToStoreAsSecret += `        - name: ${item}
@@ -97,7 +97,7 @@ async function createEnvVars(object, name) {
 
     // create env part for deployment
     if (i === values.length - 1) {
-      secretValues += `- name: ${item}\n          valueFrom:\n            secretKeyRef:\n              key: ${formatKey}\n              name: ${name}`
+      secretValues += `        - name: ${item}\n          valueFrom:\n            secretKeyRef:\n              key: ${formatKey}\n              name: ${name}`
     } else {
       secretValues += `        - name: ${item}\n          valueFrom:\n            secretKeyRef:\n              key: ${formatKey}\n              name: ${name}\n`
     }
