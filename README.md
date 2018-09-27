@@ -1,4 +1,4 @@
-# Kubernetes deployment & service generator for Node.js apps.
+# Kubernetes deployment & service generator CLI tool.
 
 ## Install
 
