@@ -92,6 +92,7 @@ program
         console.log('Successfully created yaml for deployment with secrets/envvars.')
       } catch (err) {
         console.error('Error while creating deployment with secrets/envvars...', err)
+        process.exit(1)
       }
     } else {
       try {
@@ -106,6 +107,7 @@ program
         console.log('Successfully created yaml for deployment.')
       } catch (err) {
         console.error('Error while creating deployment...', err)
+        process.exit(1)
       }
     }
 
@@ -115,6 +117,7 @@ program
       shouldCreateService = await questions.shouldCreateService()
     } catch (err) {
       console.error('Error:', err)
+      throw new Error(err)
     }
 
     if (shouldCreateService.value) {
@@ -128,8 +131,11 @@ program
         console.log('Successfully created yaml file for Service!')
       } catch (err) {
         console.error('Error while creating Service yaml file.', err)
+        process.exit(1)
       }
     }
+
+    console.log('\n---- All done. ----\n')
 
     // TODO: make tests
     // TODO: provide dir multiple way: `-d ../project-dir`, `-d project-dir`
