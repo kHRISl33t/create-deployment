@@ -11,6 +11,7 @@
     "sourceType": "script"
   },
   "rules": {
+    "no-console": "off",
     "semi": ["error", "never"],
     "comma-dangle": "off",
     "no-use-before-define": "off",
