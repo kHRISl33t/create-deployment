@@ -23,12 +23,12 @@ ${values}`
 }
 
 async function envSection(envVars, secretsEnvVars) {
+  // replace this with arrow function and instan return the value
   return `- env:\n${envVars}${secretsEnvVars}`
 }
 
 async function deploymentWithEnvVars(deployment, namespace, processType, image, containerName, containerPort, env) {
-  const deploymentYaml = `
-apiVersion: extensions/v1beta1
+  const deploymentYaml = `apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
@@ -66,8 +66,7 @@ spec:
 }
 
 async function deployment(deployment, namespace, processType, image, containerName, containerPort) {
-  const deploymentYaml = `
-apiVersion: extensions/v1beta1
+  const deploymentYaml = `apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
@@ -104,8 +103,7 @@ spec:
 }
 
 async function service(deployment, namespace, processType, containerPort, typeOfService) {
-  const serviceYaml = `
-apiVersion: v1
+  const serviceYaml = `apiVersion: v1
 kind: Service
 metadata:
   name: ${deployment}-service
