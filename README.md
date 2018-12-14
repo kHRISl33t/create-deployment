@@ -32,6 +32,23 @@ You will be prompt through the followings:
 
     - *Expected value: String*
 
+3. **Do you have a ready docker image?**
+
+    - If the answer is **yes**, you will need to provide the url/name for the image. (e.g: `example.com/image:tag` or `image:tag`)
+
+    - If the answer is **no**, it will build the image for you based on your Dockerfile in the project directory.  
+
+        - **Do you want to push the created image to an external docker repository?*** 
+
+            - If the answer is **yes**, it will ask for your docker repository's username and password. After successful login, you will need to give your repository's url **without an ending slash**. 
+
+            - Few examples: 
+
+                1. Dockerhub: **your_dockerhub_username**
+                2. Azure: **repository-name.azurecr.io**
+                3. AWS: **ACCOUNT_ID.dkr.ecr.LOCATION.amazonaws.com**
+                4. Google: **gcr.io/YOUR_PROJECT_NAME**
+
 3. **Provide your docker image name/url:** (default value: your_repository/your_image:version_tag)
 
     - *Expected value: String*
