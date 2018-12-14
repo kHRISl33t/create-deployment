@@ -45,8 +45,41 @@ program
     try {
       processType = await questions.processType()
       namespace = await questions.namespace()
-      dockerImage = await questions.dockerImage()
-      containerName = await questions.containerName()
+
+      const buildDockerImage = await questions.buildDockerImage()
+
+      if (!buildDockerImage.value) {
+        const imageTag = await questions.provideTagForImage()
+        const imageName = `${deployment}:${imageTag.value}`
+
+        console.log(`Image (${imageName}) build started...`)
+
+        // create docker image
+        await helper.shellExecAsync(`docker build -t ${imageName} .`, { timeout: 999999 })
+
+        const doPush = await questions.pushImage()
+
+        if (doPush.value) {
+          const url = await questions.getExternalRepoURL()
+
+          const imageNameWithRepoURL = `${url.value}/${imageName}`
+
+          // login
+          await helper.shellExecAsync('docker login')
+          // tag
+          await helper.shellExecAsync(`docker tag ${imageName} ${imageNameWithRepoURL}`)
+          // push
+          await helper.shellExecAsync(`docker push ${imageNameWithRepoURL}`)
+
+          dockerImage = await questions.dockerImage(imageNameWithRepoURL)
+        } else {
+          dockerImage = await questions.dockerImage(imageName)
+        }
+      } else {
+        dockerImage = await questions.dockerImage()
+      }
+      // create docker secret if needed (to be able to pull the image from the repo or not needed)
+      containerName = await questions.containerName(deployment)
       containerPort = await questions.containerPort()
       hasEnv = await questions.hasEnv()
     } catch (err) {
@@ -140,7 +173,6 @@ program
     // TODO: make tests
     // TODO: provide dir multiple way: `-d ../project-dir`, `-d project-dir`
     // TODO: path parse
-    // depends on the current folder
   })
 
 program.parse(process.argv)
