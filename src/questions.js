@@ -70,6 +70,57 @@ module.exports = {
     default: (image === undefined) ? 'dockerhub.io/myimage:tag' : `${image}`,
     validate: value => validate(value, Joi.string().required())
   }]),
+  dockerSecret: async () => await inquirer.prompt([{
+    type: 'list',
+    name: 'values',
+    message: 'Do you need/have a docker secret file? '
+    + '(if using a private repository, it might be required to be able to pull images)',
+    choices: ['I dont have, but create it for me!',
+      'I have one already in the cluster, will provide the name for it.', 'I don\'t need it.'],
+    default: ['I don\'t need it.'],
+  }]),
+  dockerSecretName: async () => await inquirer.prompt([{
+    type: 'input',
+    name: 'value',
+    message: 'Give a name for the docker-registry secret:',
+    default: 'docker-registry',
+    validate: value => validate(value, Joi.string().required())
+  }]),
+  dockerServer: async () => await inquirer.prompt([{
+    type: 'input',
+    name: 'value',
+    message: 'Provide your Private Docker Registry FQDN:',
+    default: 'https://index.docker.io/v1/',
+    validate: value => validate(value, Joi.string().required())
+  }]),
+  dockerUsername: async () => await inquirer.prompt([{
+    type: 'input',
+    name: 'value',
+    message: 'Provide your Docker username:',
+    default: 'username',
+    validate: value => validate(value, Joi.string().required())
+  }]),
+  dockerPassword: async () => await inquirer.prompt([{
+    type: 'password',
+    name: 'value',
+    message: 'Provide your Docker password:',
+    default: 'password',
+    validate: value => validate(value, Joi.string().required())
+  }]),
+  dockerEmail: async () => await inquirer.prompt([{
+    type: 'input',
+    name: 'value',
+    message: 'Provide your Docker e-mail:',
+    default: 'no@email.local',
+    validate: value => validate(value, Joi.string().email().required())
+  }]),
+  alreadyExistingDockerSecret: async () => await inquirer.prompt([{
+    type: 'input',
+    name: 'value',
+    message: 'Give your already existing docker-secret name:',
+    default: 'docker-registry',
+    validate: value => validate(value, Joi.string().required())
+  }]),
   containerName: async name => await inquirer.prompt([{
     type: 'input',
     name: 'value',

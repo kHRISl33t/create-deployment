@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-/* eslint-disable  no-unused-expressions */
+/* eslint-disable no-case-declarations */
+/* eslint-disable no-unused-expressions */
 
 'use strict'
 
@@ -10,6 +11,7 @@ const helper = require('./helper')
 const envVars = require('./envVars')
 const questions = require('./questions')
 const create = require('./create')
+const docker = require('./docker')
 
 program
   .version('1.0.0')
@@ -36,6 +38,7 @@ program
 
     let processType
     let namespace
+    let dockerRegistrySecretName
     let dockerImage
     let containerName
     let containerPort
@@ -78,7 +81,30 @@ program
       } else {
         dockerImage = await questions.dockerImage()
       }
-      // create docker secret if needed (to be able to pull the image from the repo or not needed)
+
+      const dockerSecret = await questions.dockerSecret()
+      docker.registry('localhost', 'khris', 'asdf', 'no@email.local')
+      switch (dockerSecret.values) {
+        case 'I dont have, but create it for me!':
+          const secretName = await questions.dockerSecretName()
+          const server = await questions.dockerServer()
+          const username = await questions.dockerUsername()
+          const password = await questions.dockerPassword()
+          const email = await questions.dockerEmail()
+
+          const dockerRegistry = await docker.registry(server.value, username.value, password.value, email.value)
+          await create.dockerRegistrySecret(secretName.value, dockerRegistry)
+          dockerRegistrySecretName = secretName.value
+
+          break
+        case 'I have one already in the cluster, will provide the name for it.':
+          const existingSecretName = await questions.alreadyExistingDockerSecret()
+          dockerRegistrySecretName = existingSecretName.value
+
+          break
+        default:
+          break
+      }
       containerName = await questions.containerName(deployment)
       containerPort = await questions.containerPort()
       hasEnv = await questions.hasEnv()
@@ -120,7 +146,8 @@ program
           dockerImage.value,
           containerName.value,
           containerPort.value,
-          env
+          env,
+          dockerRegistrySecretName
         )
         console.log('Successfully created yaml for deployment with secrets/envvars.')
       } catch (err) {
@@ -135,7 +162,8 @@ program
           processType.value,
           dockerImage.value,
           containerName.value,
-          containerPort.value
+          containerPort.value,
+          dockerRegistrySecretName
         )
         console.log('Successfully created yaml for deployment.')
       } catch (err) {

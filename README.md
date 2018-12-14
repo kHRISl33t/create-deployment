@@ -53,6 +53,40 @@ You will be prompt through the followings:
 
     - *Expected value: String*
 
+5. **Do you need/have a docker secret file?**
+
+    - **Select your preferred option: (Use arrow keys)**
+
+        - **I dont have, but create it for me!**
+
+            - **Give a name for the docker-registry secret:** (default value: docker-registry)
+
+                - *Expected value String*
+
+            - **Provide your Private Docker Registry FQDN:** (default value: https://index.docker.io/v1/)
+
+                - *Expected value String*
+
+            - **Provide your Docker username:** (default value: username)
+
+                - *Expected value String*
+
+            - **Provide your Docker password:** (default value: password)
+
+                - *Expected value String*
+
+            - **Provide your Docker e-mail:** (default value: no@email.local)
+
+                - *Expected value e-mail*
+
+        - **I have one already in the cluster, will provide the name for it.**
+            
+            - **Give your already existing docker-secret name:** (default value: docker-registry)
+
+                - *Expected value String*
+
+        - **I don't need it.**
+
 4. **Give a name to your docker container:** (default value: myimage)
 
     - *Expected value: String*
@@ -88,6 +122,7 @@ You will find a `kubernetes` folder in your project folder, where you will find 
 ## How to apply the created files?
 
 ```sh
+$ kubectl create -f kubernetes/docker-registry-secret.yml
 $ kubectl create -f kubernetes/<DEPLOYMENT_NAME>-secrets.yml
 $ kubectl create -f kubernetes/<DEPLOYMENT_NAME>-service.yml
 $ kubectl create -f kubernetes/<DEPLOYMENT_NAME>-<PROCESS_TYPE>-deployment.yml

@@ -6,6 +6,24 @@
 const fs = require('fs')
 const helper = require('./helper')
 
+async function dockerRegistrySecret(name, value) {
+  console.log(value)
+  const dockerSecretYaml = `apiVersion: v1
+data:
+  .dockerconfigjson: ${value}
+kind: Secret
+metadata:
+  name: ${name}
+type: kubernetes.io/dockerconfigjson
+`
+
+  if (!fs.existsSync('kubernetes')) {
+    await helper.makeDir('kubernetes')
+  }
+
+  return await helper.writeFile('kubernetes/docker-registry-secret.yml', dockerSecretYaml)
+}
+
 async function secretFile(values, name) {
   const secretYaml = `apiVersion: v1
 kind: Secret
@@ -27,7 +45,21 @@ async function envSection(envVars, secretsEnvVars) {
   return `- env:\n${envVars}${secretsEnvVars}`
 }
 
-async function deploymentWithEnvVars(deployment, namespace, processType, image, containerName, containerPort, env) {
+async function deploymentWithEnvVars(
+  deployment,
+  namespace,
+  processType,
+  image,
+  containerName,
+  containerPort,
+  env,
+  dockerRegistrySecretName
+) {
+  let imagePullSecrets = `imagePullSecrets:
+      - name: ${dockerRegistrySecretName}`
+
+  if (dockerRegistrySecretName === undefined) imagePullSecrets = ''
+
   const deploymentYaml = `apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -56,7 +88,7 @@ spec:
         ports:
         - containerPort: ${containerPort}
           protocol: TCP
-    `
+      ${imagePullSecrets}`
 
   if (!fs.existsSync('kubernetes')) {
     await helper.makeDir('kubernetes')
@@ -65,7 +97,12 @@ spec:
   return await helper.writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
 }
 
-async function deployment(deployment, namespace, processType, image, containerName, containerPort) {
+async function deployment(deployment, namespace, processType, image, containerName, containerPort, dockerRegistrySecretName) {
+  let imagePullSecrets = `imagePullSecrets:
+      - name: ${dockerRegistrySecretName}`
+
+  if (dockerRegistrySecretName === undefined) imagePullSecrets = ''
+
   const deploymentYaml = `apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -93,7 +130,7 @@ spec:
         ports:
         - containerPort: ${containerPort}
           protocol: TCP
-    `
+      ${imagePullSecrets}`
 
   if (!fs.existsSync('kubernetes')) {
     await helper.makeDir('kubernetes')
@@ -129,5 +166,6 @@ module.exports = {
   envSection,
   deployment,
   deploymentWithEnvVars,
-  service
+  service,
+  dockerRegistrySecret
 }
