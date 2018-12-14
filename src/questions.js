@@ -33,18 +33,48 @@ module.exports = {
     default: 'default',
     validate: value => validate(value, Joi.string().alphanum().required())
   }]),
-  dockerImage: async () => await inquirer.prompt([{
+  buildDockerImage: async () => await inquirer.prompt([{
+    type: 'confirm',
+    name: 'value',
+    message: 'Do you have a ready docker image?'
+    + '\n- If yes, provide the url/name for it. (e.g: `example.com/image:tag` or `image:tag`)'
+    + '\n- If no, it will build the image for you with your given project '
+    + 'name and you will be asked for version tag.',
+    default: true,
+  }]),
+  provideTagForImage: async () => await inquirer.prompt([{
+    type: 'input',
+    name: 'value',
+    message: 'Provide version tag for your docker image:',
+    default: 'latest',
+    validate: value => validate(value, Joi.string().alphanum().required())
+  }]),
+  pushImage: async () => await inquirer.prompt([{
+    type: 'confirm',
+    name: 'value',
+    message: 'Do you want to push the created image to an external docker repository?'
+    + '\n- If yes, you will need to provide your docker repository\'s username, password and URL',
+    default: false,
+  }]),
+  getExternalRepoURL: async () => await inquirer.prompt([{
+    type: 'input',
+    name: 'value',
+    message: 'Give your external docker repository url: (e.g: your_dockerhub_repository, WITHOUT ending slash)',
+    // add check here to validate there is no ending slash
+    validate: value => validate(value, Joi.string().required())
+  }]),
+  dockerImage: async image => await inquirer.prompt([{
     type: 'input',
     name: 'value',
     message: 'Provide your docker image name/url:',
-    default: 'dockerhub.io/myimage:tag',
+    default: (image === undefined) ? 'dockerhub.io/myimage:tag' : `${image}`,
     validate: value => validate(value, Joi.string().required())
   }]),
-  containerName: async () => await inquirer.prompt([{
+  containerName: async name => await inquirer.prompt([{
     type: 'input',
     name: 'value',
     message: 'Give a name to your docker container:',
-    default: 'myimage',
+    default: `${name}`,
     validate: value => validate(value, Joi.string().alphanum().required())
   }]),
   containerPort: async () => await inquirer.prompt([{
