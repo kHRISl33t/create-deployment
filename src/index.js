@@ -83,7 +83,7 @@ program
       }
 
       const dockerSecret = await questions.dockerSecret()
-      docker.registry('localhost', 'khris', 'asdf', 'no@email.local')
+
       switch (dockerSecret.values) {
         case 'I dont have, but create it for me!':
           const secretName = await questions.dockerSecretName()
