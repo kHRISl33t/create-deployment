@@ -50,7 +50,6 @@ program
       containerPort = await questions.containerPort()
       hasEnv = await questions.hasEnv()
     } catch (err) {
-      console.error('Error:', err)
       throw new Error(err)
     }
 
@@ -116,7 +115,6 @@ program
     try {
       shouldCreateService = await questions.shouldCreateService()
     } catch (err) {
-      console.error('Error:', err)
       throw new Error(err)
     }
 
