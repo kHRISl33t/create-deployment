@@ -6,6 +6,24 @@
 const fs = require('fs')
 const helper = require('./helper')
 
+async function dockerRegistrySecret(name, value) {
+  console.log(value)
+  const dockerSecretYaml = `apiVersion: v1
+data:
+  .dockerconfigjson: ${value}
+kind: Secret
+metadata:
+  name: ${name}
+type: kubernetes.io/dockerconfigjson
+`
+
+  if (!fs.existsSync('kubernetes')) {
+    await helper.makeDir('kubernetes')
+  }
+
+  return await helper.writeFile('kubernetes/docker-registry-secret.yml', dockerSecretYaml)
+}
+
 async function secretFile(values, name) {
   const secretYaml = `apiVersion: v1
 kind: Secret
@@ -23,12 +41,26 @@ ${values}`
 }
 
 async function envSection(envVars, secretsEnvVars) {
+  // replace this with arrow function and instan return the value
   return `- env:\n${envVars}${secretsEnvVars}`
 }
 
-async function deploymentWithEnvVars(deployment, namespace, processType, image, containerName, containerPort, env) {
-  const deploymentYaml = `
-apiVersion: extensions/v1beta1
+async function deploymentWithEnvVars(
+  deployment,
+  namespace,
+  processType,
+  image,
+  containerName,
+  containerPort,
+  env,
+  dockerRegistrySecretName
+) {
+  let imagePullSecrets = `imagePullSecrets:
+      - name: ${dockerRegistrySecretName}`
+
+  if (dockerRegistrySecretName === undefined) imagePullSecrets = ''
+
+  const deploymentYaml = `apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
@@ -56,7 +88,7 @@ spec:
         ports:
         - containerPort: ${containerPort}
           protocol: TCP
-    `
+      ${imagePullSecrets}`
 
   if (!fs.existsSync('kubernetes')) {
     await helper.makeDir('kubernetes')
@@ -65,9 +97,13 @@ spec:
   return await helper.writeFile(`kubernetes/${deployment}-${processType}-deployment.yml`, deploymentYaml)
 }
 
-async function deployment(deployment, namespace, processType, image, containerName, containerPort) {
-  const deploymentYaml = `
-apiVersion: extensions/v1beta1
+async function deployment(deployment, namespace, processType, image, containerName, containerPort, dockerRegistrySecretName) {
+  let imagePullSecrets = `imagePullSecrets:
+      - name: ${dockerRegistrySecretName}`
+
+  if (dockerRegistrySecretName === undefined) imagePullSecrets = ''
+
+  const deploymentYaml = `apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
@@ -94,7 +130,7 @@ spec:
         ports:
         - containerPort: ${containerPort}
           protocol: TCP
-    `
+      ${imagePullSecrets}`
 
   if (!fs.existsSync('kubernetes')) {
     await helper.makeDir('kubernetes')
@@ -104,8 +140,7 @@ spec:
 }
 
 async function service(deployment, namespace, processType, containerPort, typeOfService) {
-  const serviceYaml = `
-apiVersion: v1
+  const serviceYaml = `apiVersion: v1
 kind: Service
 metadata:
   name: ${deployment}-service
@@ -131,5 +166,6 @@ module.exports = {
   envSection,
   deployment,
   deploymentWithEnvVars,
-  service
+  service,
+  dockerRegistrySecret
 }

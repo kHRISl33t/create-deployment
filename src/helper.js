@@ -4,6 +4,7 @@
 
 const fs = require('fs')
 const find = require('find')
+const shell = require('shelljs')
 
 function readFile(path, opts = 'utf8') {
   return new Promise((resolve, reject) => {
@@ -63,10 +64,20 @@ async function findEnvFiles(workingDir) {
   return transformed
 }
 
+function shellExecAsync(cmd, options = {}) {
+  return new Promise((resolve, reject) => {
+    shell.exec(cmd, options, (code, stdout, stderr) => {
+      if (code !== 0) return reject(new Error(stderr))
+      return resolve(stdout)
+    })
+  })
+}
+
 module.exports = {
   readFile,
   writeFile,
   findFile,
   makeDir,
-  findEnvFiles
+  findEnvFiles,
+  shellExecAsync
 }

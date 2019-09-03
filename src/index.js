@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-/* eslint-disable  no-unused-expressions */
+/* eslint-disable no-case-declarations */
+/* eslint-disable no-unused-expressions */
 
 'use strict'
 
@@ -10,6 +11,7 @@ const helper = require('./helper')
 const envVars = require('./envVars')
 const questions = require('./questions')
 const create = require('./create')
+const docker = require('./docker')
 
 program
   .version('1.0.0')
@@ -36,6 +38,7 @@ program
 
     let processType
     let namespace
+    let dockerRegistrySecretName
     let dockerImage
     let containerName
     let containerPort
@@ -45,8 +48,64 @@ program
     try {
       processType = await questions.processType()
       namespace = await questions.namespace()
-      dockerImage = await questions.dockerImage()
-      containerName = await questions.containerName()
+
+      const buildDockerImage = await questions.buildDockerImage()
+
+      if (!buildDockerImage.value) {
+        const imageTag = await questions.provideTagForImage()
+        const imageName = `${deployment}:${imageTag.value}`
+
+        console.log(`Image (${imageName}) build started...`)
+
+        // create docker image
+        await helper.shellExecAsync(`docker build -t ${imageName} .`, { timeout: 999999 })
+
+        const doPush = await questions.pushImage()
+
+        if (doPush.value) {
+          const url = await questions.getExternalRepoURL()
+
+          const imageNameWithRepoURL = `${url.value}/${imageName}`
+
+          // login
+          await helper.shellExecAsync('docker login')
+          // tag
+          await helper.shellExecAsync(`docker tag ${imageName} ${imageNameWithRepoURL}`)
+          // push
+          await helper.shellExecAsync(`docker push ${imageNameWithRepoURL}`)
+
+          dockerImage = await questions.dockerImage(imageNameWithRepoURL)
+        } else {
+          dockerImage = await questions.dockerImage(imageName)
+        }
+      } else {
+        dockerImage = await questions.dockerImage()
+      }
+
+      const dockerSecret = await questions.dockerSecret()
+
+      switch (dockerSecret.values) {
+        case 'I dont have, but create it for me!':
+          const secretName = await questions.dockerSecretName()
+          const server = await questions.dockerServer()
+          const username = await questions.dockerUsername()
+          const password = await questions.dockerPassword()
+          const email = await questions.dockerEmail()
+
+          const dockerRegistry = await docker.registry(server.value, username.value, password.value, email.value)
+          await create.dockerRegistrySecret(secretName.value, dockerRegistry)
+          dockerRegistrySecretName = secretName.value
+
+          break
+        case 'I have one already in the cluster, will provide the name for it.':
+          const existingSecretName = await questions.alreadyExistingDockerSecret()
+          dockerRegistrySecretName = existingSecretName.value
+
+          break
+        default:
+          break
+      }
+      containerName = await questions.containerName(deployment)
       containerPort = await questions.containerPort()
       hasEnv = await questions.hasEnv()
     } catch (err) {
@@ -86,7 +145,8 @@ program
           dockerImage.value,
           containerName.value,
           containerPort.value,
-          env
+          env,
+          dockerRegistrySecretName
         )
         console.log('Successfully created yaml for deployment with secrets/envvars.')
       } catch (err) {
@@ -101,7 +161,8 @@ program
           processType.value,
           dockerImage.value,
           containerName.value,
-          containerPort.value
+          containerPort.value,
+          dockerRegistrySecretName
         )
         console.log('Successfully created yaml for deployment.')
       } catch (err) {
@@ -138,7 +199,6 @@ program
     // TODO: make tests
     // TODO: provide dir multiple way: `-d ../project-dir`, `-d project-dir`
     // TODO: path parse
-    // depends on the current folder
   })
 
 program.parse(process.argv)

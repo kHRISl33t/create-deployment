@@ -32,9 +32,60 @@ You will be prompt through the followings:
 
     - *Expected value: String*
 
+3. **Do you have a ready docker image?**
+
+    - If the answer is **yes**, you will need to provide the url/name for the image. (e.g: `example.com/image:tag` or `image:tag`)
+
+    - If the answer is **no**, it will build the image for you based on your Dockerfile in the project directory.  
+
+        - **Do you want to push the created image to an external docker repository?*** 
+
+            - If the answer is **yes**, it will ask for your docker repository's username and password. After successful login, you will need to give your repository's url **without an ending slash**. 
+
+            - Few examples: 
+
+                1. Dockerhub: **your_dockerhub_username**
+                2. Azure: **repository-name.azurecr.io**
+                3. AWS: **ACCOUNT_ID.dkr.ecr.LOCATION.amazonaws.com**
+                4. Google: **gcr.io/YOUR_PROJECT_NAME**
+
 3. **Provide your docker image name/url:** (default value: your_repository/your_image:version_tag)
 
     - *Expected value: String*
+
+5. **Do you need/have a docker secret file?**
+
+    - **Select your preferred option: (Use arrow keys)**
+
+        - **I dont have, but create it for me!**
+
+            - **Give a name for the docker-registry secret:** (default value: docker-registry)
+
+                - *Expected value String*
+
+            - **Provide your Private Docker Registry FQDN:** (default value: https://index.docker.io/v1/)
+
+                - *Expected value String*
+
+            - **Provide your Docker username:** (default value: username)
+
+                - *Expected value String*
+
+            - **Provide your Docker password:** (default value: password)
+
+                - *Expected value String*
+
+            - **Provide your Docker e-mail:** (default value: no@email.local)
+
+                - *Expected value e-mail*
+
+        - **I have one already in the cluster, will provide the name for it.**
+            
+            - **Give your already existing docker-secret name:** (default value: docker-registry)
+
+                - *Expected value String*
+
+        - **I don't need it.**
 
 4. **Give a name to your docker container:** (default value: myimage)
 
@@ -71,6 +122,7 @@ You will find a `kubernetes` folder in your project folder, where you will find 
 ## How to apply the created files?
 
 ```sh
+$ kubectl create -f kubernetes/docker-registry-secret.yml
 $ kubectl create -f kubernetes/<DEPLOYMENT_NAME>-secrets.yml
 $ kubectl create -f kubernetes/<DEPLOYMENT_NAME>-service.yml
 $ kubectl create -f kubernetes/<DEPLOYMENT_NAME>-<PROCESS_TYPE>-deployment.yml
